@@ -420,8 +420,3 @@ Pull requests приветствуются. Для крупных изменен
 4. Запушьте (`git push origin feature/amazing-feature`)
 5. Откройте Pull Request
 
----
-
-<p align="center">
-  Сделано с ❤️ для спортивных комплексов
-</p>
