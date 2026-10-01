@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-person-circle me-2"></i> Мой профиль
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Логин</dt>
+                    <dd class="col-sm-8">{{ user.username }}</dd>
+
+                    <dt class="col-sm-4">Роль</dt>
+                    <dd class="col-sm-8"><span class="badge bg-secondary">{{ user.role }}</span></dd>
+
+                    <dt class="col-sm-4">Дата регистрации</dt>
+                    <dd class="col-sm-8">{{ user.created_at }}</dd>
+                </dl>
+
+                <hr>
+
+                <form method="POST" action="{{ url_for('profile_edit') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <label class="form-label">ФИО</label>
+                        <input type="text" name="full_name" class="form-control"
+                               value="{{ user.full_name }}" required minlength="2" maxlength="100">
+                    </div>
+                    <button class="btn btn-primary"><i class="bi bi-save me-1"></i> Сохранить</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header"><i class="bi bi-key me-2"></i> Сменить пароль</div>
+            <div class="card-body">
+                <a href="{{ url_for('change_password') }}" class="btn btn-outline-secondary w-100">
+                    Перейти к смене пароля
+                </a>
+            </div>
+        </div>
+
+        {% if user.role == 'client' %}
+        <div class="card mt-4 border-danger">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle me-2"></i> Опасная зона
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">
+                    Удаление аккаунта необратимо. Все ваши записи будут удалены.
+                </p>
+                <form method="POST" action="{{ url_for('profile_delete') }}"
+                      onsubmit="return confirm('Удалить аккаунт навсегда? Действие необратимо.');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-2">
+                        <label class="form-label small">Введите пароль для подтверждения</label>
+                        <input type="password" name="password" class="form-control" required maxlength="128">
+                    </div>
+                    <button class="btn btn-danger w-100">
+                        <i class="bi bi-trash me-1"></i> Удалить аккаунт
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-bar-chart me-2"></i> Статистика</div>
+            <div class="card-body">
+                <div class="row text-center g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded">
+                            <div class="fs-3 fw-bold">{{ stats.total or 0 }}</div>
+                            <div class="small text-muted">Всего</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-warning-subtle rounded">
+                            <div class="fs-3 fw-bold">{{ stats.pending or 0 }}</div>
+                            <div class="small text-muted">В ожидании</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-success-subtle rounded">
+                            <div class="fs-3 fw-bold">{{ stats.accepted or 0 }}</div>
+                            <div class="small text-muted">Принято</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-danger-subtle rounded">
+                            <div class="fs-3 fw-bold">{{ stats.rejected or 0 }}</div>
+                            <div class="small text-muted">Отклонено</div>
+                        </div>
+                    </div>
+                    {% if stats.cancelled is defined %}
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-secondary-subtle rounded">
+                            <div class="fs-3 fw-bold">{{ stats.cancelled or 0 }}</div>
+                            <div class="small text-muted">Отменено</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

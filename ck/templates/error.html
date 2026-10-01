@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - СпортКомплекс{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1>{{ code }}</h1>
+    <h4>{{ title }}</h4>
+    <p class="lead">{{ message }}</p>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">На главную</a>
+</div>
+{% endblock %}

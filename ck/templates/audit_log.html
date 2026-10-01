@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Журнал аудита{% endblock %}
+
+{% block content %}
+<h2>Журнал аудита безопасности</h2>
+<p class="text-muted small mb-0">Всего записей: {{ total }}. Страница {{ page }} из {{ pages }}.</p>
+<table class="table table-striped table-bordered mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Время</th>
+            <th>Пользователь</th>
+            <th>Событие</th>
+            <th>Детали</th>
+            <th>IP-адрес</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.id }}</td>
+            <td>{{ log.timestamp }}</td>
+            <td>{{ log.username }} (ID: {{ log.user_id or '-' }})</td>
+            <td><span class="badge bg-secondary">{{ log.event_type }}</span></td>
+            <td>{{ log.description }}</td>
+            <td>{{ log.ip_address }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% if pages > 1 %}
+<nav class="d-flex gap-2 justify-content-center">
+    {% if page > 1 %}<a class="btn btn-outline-secondary btn-sm" href="{{ url_for('audit_log', page=page-1) }}">&laquo; Новее</a>{% endif %}
+    {% if page < pages %}<a class="btn btn-outline-secondary btn-sm" href="{{ url_for('audit_log', page=page+1) }}">Старее &raquo;</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}
